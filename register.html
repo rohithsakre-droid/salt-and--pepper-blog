@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | Salt and Pepper</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Header and Navigation -->
+    <header class="main-header">
+        <nav class="navbar">
+            <div class="nav-links-left">
+                <a href="index.html">HOME</a>
+                <a href="#">BLOG</a>
+                <a href="login.html">LOGIN</a>
+                <a href="#">ABOUT</a>
+            </div>
+            <a href="index.html" class="navbar-brand">SALT & PEPPER</a>
+            <div class="nav-links-right">
+                <a href="#"><img src="https://placehold.co/20x20/000000/FFFFFF?text=%3f" alt="Search" class="icon"></a>
+                <!-- Replace with actual social icons -->
+                <a href="#">Fb</a>
+                <a href="#">Tw</a>
+                <a href="#">In</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <div class="form-container">
+             <!-- Added an ID to the form -->
+            <form class="auth-form" id="registerForm">
+                <h2 class="form-title">REGISTER</h2>
+                <div class="form-group">
+                    <label for="username">Username *</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password *</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn">Sign Up</button>
+                <p class="form-switch">Already have an account? <a href="login.html">Log in</a></p>
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <p>&copy; 2025 by Salt & Pepper. Proudly created.</p>
+    </footer>
+
+    <!-- Link to the new JavaScript file -->
+    <script src="script.js"></script>
+
+</body>
+</html>
+
