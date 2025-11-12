@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile | Salt and Pepper</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <nav class="navbar">
+            <div class="nav-links-left">
+                <a href="index.html">HOME</a>
+                <a href="blog.html">BLOG</a>
+                <a href="login.html">LOGIN</a>
+                <a href="profile.html" class="active">PROFILE</a>
+                <a href="about.html">ABOUT</a>
+            </div>
+            <a href="index.html" class="navbar-brand">SALT & PEPPER</a>
+            <div class="nav-links-right">
+                <a href="search.html"><img src="icons/search.png" alt="Search" class="icon"></a>
+                <a href="https://www.facebook.com" target="_blank">
+                    <img src="icons/facebook.png" alt="Facebook" class="icon">
+                </a>
+                <a href="https://www.twitter.com" target="_blank">
+                    <img src="icons\twitter.png" alt="Twitter" class="icon">
+                </a>
+                <a href="https://www.instagram.com" target="_blank">
+                    <img src="icons/instagram.jpg" alt="Instagram" class="icon">
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="profile-section">
+            <h2 class="section-title">Your Profile</h2>
+
+            <div id="profileCard" class="profile-card">
+                <div class="profile-avatar" id="avatar">A</div>
+                <div class="profile-info">
+                    <h3 id="displayName">Guest</h3>
+                    <p id="displayEmail" class="muted">guest@example.com</p>
+                    <p id="displayBio">No bio yet.</p>
+                    <p class="muted" id="displayJoined">Joined: —</p>
+                    <div class="profile-actions">
+                        <button id="editBtn" class="btn">Edit Profile</button>
+                        <button id="logoutBtn" class="btn btn-ghost">Logout</button>
+                    </div>
+                </div>
+            </div>
+
+            <form id="profileForm" class="profile-form hidden">
+                <label>
+                    Name
+                    <input id="inputName" type="text" placeholder="Your name">
+                </label>
+                <label>
+                    Email
+                    <input id="inputEmail" type="email" placeholder="you@example.com">
+                </label>
+                <label>
+                    Bio
+                    <textarea id="inputBio" rows="4" placeholder="Short bio"></textarea>
+                </label>
+                <div class="form-actions">
+                    <button type="submit" class="btn">Save</button>
+                    <button type="button" id="cancelEdit" class="btn btn-ghost">Cancel</button>
+                </div>
+            </form>
+
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <p>&copy; 2025 by Salt & Pepper. Proudly created.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Simple client-side profile demo.
+        (function(){
+            const profileCard = document.getElementById('profileCard');
+            const displayName = document.getElementById('displayName');
+            const displayEmail = document.getElementById('displayEmail');
+            const displayBio = document.getElementById('displayBio');
+            const displayJoined = document.getElementById('displayJoined');
+            const avatar = document.getElementById('avatar');
+
+            const form = document.getElementById('profileForm');
+            const inputName = document.getElementById('inputName');
+            const inputEmail = document.getElementById('inputEmail');
+            const inputBio = document.getElementById('inputBio');
+            const editBtn = document.getElementById('editBtn');
+            const cancelEdit = document.getElementById('cancelEdit');
+            const logoutBtn = document.getElementById('logoutBtn');
+
+            function render(profile){
+                displayName.textContent = profile.name || 'Guest';
+                displayEmail.textContent = profile.email || 'guest@example.com';
+                displayBio.textContent = profile.bio || 'No bio yet.';
+                displayJoined.textContent = 'Joined: ' + (profile.joined || '—');
+                avatar.textContent = (profile.name && profile.name[0]) ? profile.name[0].toUpperCase() : 'G';
+            }
+
+            function showEdit(){
+                form.classList.remove('hidden');
+                profileCard.classList.add('dimmed');
+            }
+            function hideEdit(){
+                form.classList.add('hidden');
+                profileCard.classList.remove('dimmed');
+            }
+
+            // Try to fetch profile from server; if not available, use local mock or localStorage.
+            async function loadProfile(){
+                // Try server endpoint first
+                try {
+                    const res = await fetch('/api/profile');
+                    if (res.ok) {
+                        const data = await res.json();
+                        render(data);
+                        return;
+                    }
+                } catch (e) {
+                    // ignore - fallback to local
+                }
+
+                // Fallback: check localStorage
+                const saved = localStorage.getItem('demoProfile');
+                if (saved) {
+                    render(JSON.parse(saved));
+                    return;
+                }
+
+                // Default mock
+                render({ name: 'Guest User', email: 'guest@example.com', bio: 'This is a demo profile.', joined: 'Nov 12, 2025' });
+            }
+
+            editBtn.addEventListener('click', function(){
+                // populate form with current values
+                inputName.value = displayName.textContent === 'Guest' ? '' : displayName.textContent;
+                inputEmail.value = displayEmail.textContent === 'guest@example.com' ? '' : displayEmail.textContent;
+                inputBio.value = displayBio.textContent === 'No bio yet.' ? '' : displayBio.textContent;
+                showEdit();
+            });
+
+            cancelEdit.addEventListener('click', function(){
+                hideEdit();
+            });
+
+            form.addEventListener('submit', function(e){
+                e.preventDefault();
+                const updated = {
+                    name: inputName.value || 'Guest',
+                    email: inputEmail.value || 'guest@example.com',
+                    bio: inputBio.value || 'No bio yet.',
+                    joined: new Date().toLocaleDateString()
+                };
+
+                // Save locally for demo
+                localStorage.setItem('demoProfile', JSON.stringify(updated));
+                render(updated);
+                hideEdit();
+                alert('Profile saved locally (demo).');
+            });
+
+            logoutBtn.addEventListener('click', function(){
+                // Demo logout: clear demoProfile and redirect to index
+                localStorage.removeItem('demoProfile');
+                window.location.href = 'index.html';
+            });
+
+            loadProfile();
+        })();
+    </script>
+</body>
+</html>
