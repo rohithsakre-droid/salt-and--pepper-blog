@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search | Salt and Pepper</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <nav class="navbar">
+            <div class="nav-links-left">
+                <a href="index.html">HOME</a>
+                <a href="blog.html">BLOG</a>
+                <a href="login.html">LOGIN</a>
+                <a href="about.html">ABOUT</a>
+            </div>
+            <a href="index.html" class="navbar-brand">SALT & PEPPER</a>
+            <div class="nav-links-right">
+                <a href="search.html"><img src="icons/search.png" alt="Search" class="icon"></a>
+                <a href="https://www.facebook.com" target="_blank">
+                    <img src="icons/facebook.png" alt="Facebook" class="icon">
+                </a>
+                <a href="https://www.twitter.com" target="_blank">
+                    <img src="icons\twitter.png" alt="Twitter" class="icon">
+                </a>
+                <a href="https://www.instagram.com" target="_blank">
+                    <img src="icons/instagram.jpg" alt="Instagram" class="icon">
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="search-section">
+            <h2 class="section-title">Search Posts</h2>
+
+            <form id="searchForm" class="search-form">
+                <input id="searchInput" type="search" placeholder="Search posts by title or excerpt..." aria-label="Search posts">
+                <button type="submit" class="btn">Search</button>
+            </form>
+
+            <div id="searchResults" class="post-grid search-results">
+                <p class="muted">Enter a search term and press Search to find matching posts.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <p>&copy; 2025 by Salt & Pepper. Proudly created.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Minimal demo search behavior — client-side only and non-persistent.
+        (function(){
+            const form = document.getElementById('searchForm');
+            const input = document.getElementById('searchInput');
+            const results = document.getElementById('searchResults');
+
+            form.addEventListener('submit', function(e){
+                e.preventDefault();
+                const q = input.value.trim();
+                results.innerHTML = '';
+                if (!q) {
+                    results.innerHTML = '<p class="muted">Please enter a search term.</p>';
+                    return;
+                }
+
+                // Demo UX: show a simple message. Replace with real search logic later.
+                const msg = document.createElement('p');
+                msg.className = 'muted';
+                msg.textContent = `No results found for "${q}".`;
+                results.appendChild(msg);
+            });
+        })();
+    </script>
+</body>
+</html>
