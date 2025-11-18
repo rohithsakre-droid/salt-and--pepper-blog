@@ -17,8 +17,8 @@
             <div class="nav-links-left">
                 <a href="index.html" class="active">HOME</a>
                 <a href="blog.html">BLOG</a>
-                <a href="login.html">LOGIN</a>
-                <a href="profile.html">PROFILE</a>
+                <a id="navLogin" href="login.html">LOGIN</a>
+                <a id="navProfile" href="profile.html">PROFILE</a>
                 <a href="about.html">ABOUT</a>
             </div>
             <a href="index.html" class="navbar-brand">SALT & PEPPER</a>
@@ -40,86 +40,10 @@
     </header>
 
     <main class="container">
-        <section class="hero-image">
-            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Plates of delicious food" onerror="this.onerror=null;this.src='https://placehold.co/1200x500/cccccc/ffffff?text=Delicious+Food';">
-        </section>
-
         <section class="post-feed">
             <h2 class="section-title">ALL POSTS</h2>
-            <div class="post-grid">
-
-                <article class="post-card">
-                    <a href="#" class="post-image-link">
-                        <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80" alt="A healthy salad bowl" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/ffffff?text=Blog+Post';">
-                    </a>
-                    <div class="post-content">
-                        <div class="post-meta">
-                            <span class="author-avatar">E</span>
-                            <span class="author-name">Emily Carter</span>
-                            <span class="meta-dot">·</span>
-                            <span class="post-date">Oct 14, 2025</span>
-                            <span class="meta-dot">·</span>
-                            <span class="read-time">2 min read</span>
-                        </div>
-                        <h3 class="post-title"><a href="#">Plating made easy: feast with your eyes</a></h3>
-                        <p class="post-excerpt">Create a blog post subtitle that summarizes your post in a few short, punchy sentences and entices your audience...</p>
-                    </div>
-                </article>
-
-                <article class="post-card">
-                    <a href="#" class="post-image-link">
-                        <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80" alt="Stack of pancakes with berries" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/ffffff?text=Blog+Post';">
-                    </a>
-                    <div class="post-content">
-                        <div class="post-meta">
-                            <span class="author-avatar">B</span>
-                            <span class="author-name">Ben Lawson</span>
-                             <span class="meta-dot">·</span>
-                            <span class="post-date">Oct 12, 2025</span>
-                             <span class="meta-dot">·</span>
-                            <span class="read-time">3 min read</span>
-                        </div>
-                        <h3 class="post-title"><a href="#">Entertaining made easy: 3 ingredient crostinis</a></h3>
-                        <p class="post-excerpt">A few short, punchy sentences that summarize your post and entice your audience to continue reading...</p>
-                    </div>
-                </article>
-
-                 <article class="post-card">
-                     <a href="#" class="post-image-link">
-                        <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fGVu" alt="Grilled fish with lemon" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/ffffff?text=Blog+Post';">
-                    </a>
-                    <div class="post-content">
-                        <div class="post-meta">
-                            <span class="author-avatar">A</span>
-                            <span class="author-name">Anya Sharma</span>
-                            <span class="meta-dot">·</span>
-                            <span class="post-date">Oct 10, 2025</span>
-                            <span class="meta-dot">·</span>
-                            <span class="read-time">4 min read</span>
-                        </div>
-                        <h3 class="post-title"><a href="#">The perfect weeknight salmon dinner</a></h3>
-                        <p class="post-excerpt">Summarize your post here in a few short, punchy sentences that will make your audience want to click and read more...</p>
-                    </div>
-                </article>
-
-                 <article class="post-card">
-                     <a href="#" class="post-image-link">
-                        <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=781&q=80" alt="A slice of pizza" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/ffffff?text=Blog+Post';">
-                    </a>
-                    <div class="post-content">
-                        <div class="post-meta">
-                            <span class="author-avatar">M</span>
-                            <span class="author-name">Marco Bianchi</span>
-                             <span class="meta-dot">·</span>
-                            <span class="post-date">Oct 08, 2025</span>
-                             <span class="meta-dot">·</span>
-                            <span class="read-time">2 min read</span>
-                        </div>
-                        <h3 class="post-title"><a href="#">Miracle no-knead bread</a></h3>
-                        <p class="post-excerpt">Entice your audience to continue reading with a short and punchy summary of your latest amazing recipe or story...</p>
-                    </div>
-                </article>
-
+            <div class="post-grid" id="homeBlogsGrid">
+                <!-- Posts from database will be injected here -->
             </div>
         </section>
     </main>
@@ -127,6 +51,8 @@
     <footer class="main-footer">
         <p>&copy; 2025 by Salt & Pepper. Proudly created.</p>
     </footer>
+
+    <script src="script.js"></script>
 
 </body>
 </html>

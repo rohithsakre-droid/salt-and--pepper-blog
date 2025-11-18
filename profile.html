@@ -17,8 +17,8 @@
             <div class="nav-links-left">
                 <a href="index.html">HOME</a>
                 <a href="blog.html">BLOG</a>
-                <a href="login.html">LOGIN</a>
-                <a href="profile.html" class="active">PROFILE</a>
+                <a id="navLogin" href="login.html">LOGIN</a>
+                <a id="navProfile" href="profile.html" class="active">PROFILE</a>
                 <a href="about.html">ABOUT</a>
             </div>
             <a href="index.html" class="navbar-brand">SALT & PEPPER</a>
@@ -33,6 +33,8 @@
                 <a href="https://www.instagram.com" target="_blank">
                     <img src="icons/instagram.jpg" alt="Instagram" class="icon">
                 </a>
+                <span id="userStatus" style="margin-left:12px;color:#fff;font-weight:700"></span>
+                <a id="topLogoutBtn" href="#" style="margin-left:8px;display:none;color:#fff;">Logout</a>
             </div>
         </nav>
     </header>
@@ -83,100 +85,68 @@
 
     <script src="script.js"></script>
     <script>
-        // Simple client-side profile demo.
+        // Lightweight profile page integration that uses stored user info (from login/register).
         (function(){
-            const profileCard = document.getElementById('profileCard');
             const displayName = document.getElementById('displayName');
             const displayEmail = document.getElementById('displayEmail');
             const displayBio = document.getElementById('displayBio');
             const displayJoined = document.getElementById('displayJoined');
             const avatar = document.getElementById('avatar');
-
-            const form = document.getElementById('profileForm');
-            const inputName = document.getElementById('inputName');
-            const inputEmail = document.getElementById('inputEmail');
-            const inputBio = document.getElementById('inputBio');
             const editBtn = document.getElementById('editBtn');
-            const cancelEdit = document.getElementById('cancelEdit');
-            const logoutBtn = document.getElementById('logoutBtn');
+            const form = document.getElementById('profileForm');
+            const profileCard = document.getElementById('profileCard');
 
-            function render(profile){
-                displayName.textContent = profile.name || 'Guest';
-                displayEmail.textContent = profile.email || 'guest@example.com';
-                displayBio.textContent = profile.bio || 'No bio yet.';
-                displayJoined.textContent = 'Joined: ' + (profile.joined || '—');
-                avatar.textContent = (profile.name && profile.name[0]) ? profile.name[0].toUpperCase() : 'G';
+            function renderProfile(user, demo) {
+                if (user) {
+                    displayName.textContent = user.username || user.name || 'User';
+                    displayEmail.textContent = user.email || '';
+                    displayBio.textContent = demo && demo.bio ? demo.bio : 'This is your profile.';
+                    displayJoined.textContent = 'Joined: ' + (demo && demo.joined ? demo.joined : '—');
+                    avatar.textContent = (displayName.textContent && displayName.textContent[0]) ? displayName.textContent[0].toUpperCase() : 'U';
+                } else {
+                    displayName.textContent = 'Guest';
+                    displayEmail.textContent = 'guest@example.com';
+                    displayBio.textContent = 'No bio yet.';
+                    displayJoined.textContent = 'Joined: —';
+                    avatar.textContent = 'G';
+                }
             }
 
-            function showEdit(){
+            // Load stored user and optional demo profile
+            const storedUser = localStorage.getItem('user');
+            const demo = localStorage.getItem('demoProfile');
+            const user = storedUser ? JSON.parse(storedUser) : null;
+            const demoProfile = demo ? JSON.parse(demo) : null;
+            renderProfile(user, demoProfile);
+
+            // Small edit integration: populate with demo or user
+            editBtn.addEventListener('click', () => {
                 form.classList.remove('hidden');
                 profileCard.classList.add('dimmed');
-            }
-            function hideEdit(){
+                document.getElementById('inputName').value = displayName.textContent !== 'Guest' ? displayName.textContent : '';
+                document.getElementById('inputEmail').value = displayEmail.textContent !== 'guest@example.com' ? displayEmail.textContent : '';
+                document.getElementById('inputBio').value = displayBio.textContent !== 'No bio yet.' ? displayBio.textContent : '';
+            });
+
+            document.getElementById('cancelEdit').addEventListener('click', () => {
                 form.classList.add('hidden');
                 profileCard.classList.remove('dimmed');
-            }
-
-            // Try to fetch profile from server; if not available, use local mock or localStorage.
-            async function loadProfile(){
-                // Try server endpoint first
-                try {
-                    const res = await fetch('/api/profile');
-                    if (res.ok) {
-                        const data = await res.json();
-                        render(data);
-                        return;
-                    }
-                } catch (e) {
-                    // ignore - fallback to local
-                }
-
-                // Fallback: check localStorage
-                const saved = localStorage.getItem('demoProfile');
-                if (saved) {
-                    render(JSON.parse(saved));
-                    return;
-                }
-
-                // Default mock
-                render({ name: 'Guest User', email: 'guest@example.com', bio: 'This is a demo profile.', joined: 'Nov 12, 2025' });
-            }
-
-            editBtn.addEventListener('click', function(){
-                // populate form with current values
-                inputName.value = displayName.textContent === 'Guest' ? '' : displayName.textContent;
-                inputEmail.value = displayEmail.textContent === 'guest@example.com' ? '' : displayEmail.textContent;
-                inputBio.value = displayBio.textContent === 'No bio yet.' ? '' : displayBio.textContent;
-                showEdit();
             });
 
-            cancelEdit.addEventListener('click', function(){
-                hideEdit();
-            });
-
-            form.addEventListener('submit', function(e){
+            form.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const updated = {
-                    name: inputName.value || 'Guest',
-                    email: inputEmail.value || 'guest@example.com',
-                    bio: inputBio.value || 'No bio yet.',
+                    name: document.getElementById('inputName').value || displayName.textContent,
+                    email: document.getElementById('inputEmail').value || displayEmail.textContent,
+                    bio: document.getElementById('inputBio').value || displayBio.textContent,
                     joined: new Date().toLocaleDateString()
                 };
-
-                // Save locally for demo
                 localStorage.setItem('demoProfile', JSON.stringify(updated));
-                render(updated);
-                hideEdit();
+                renderProfile(user, updated);
+                form.classList.add('hidden');
+                profileCard.classList.remove('dimmed');
                 alert('Profile saved locally (demo).');
             });
-
-            logoutBtn.addEventListener('click', function(){
-                // Demo logout: clear demoProfile and redirect to index
-                localStorage.removeItem('demoProfile');
-                window.location.href = 'index.html';
-            });
-
-            loadProfile();
         })();
     </script>
 </body>

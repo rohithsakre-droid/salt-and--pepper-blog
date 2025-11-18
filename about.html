@@ -16,8 +16,8 @@
             <div class="nav-links-left">
                 <a href="index.html">HOME</a>
                 <a href="blog.html">BLOG</a>
-                <a href="login.html">LOGIN</a>
-                <a href="profile.html">PROFILE</a>
+                <a id="navLogin" href="login.html">LOGIN</a>
+                <a id="navProfile" href="profile.html">PROFILE</a>
                 <a href="about.html" class="active">ABOUT</a>
             </div>
             <a href="index.html" class="navbar-brand">SALT & PEPPER</a>
@@ -34,6 +34,8 @@
                 <a href="https://www.instagram.com" target="_blank">
                     <img src="icons/instagram.jpg" alt="Instagram" class="icon">
                 </a>
+                <span id="userStatus" style="margin-left:12px;color:#fff;font-weight:700"></span>
+                <a id="topLogoutBtn" href="#" style="margin-left:8px;display:none;color:#fff;">Logout</a>
             </div>
         </nav>
     </header>
@@ -52,6 +54,8 @@
     <footer class="main-footer">
         <p>&copy; 2025 by Salt & Pepper. Proudly created.</p>
     </footer>
+
+    <script src="script.js"></script>
 
 </body>
 </html>
