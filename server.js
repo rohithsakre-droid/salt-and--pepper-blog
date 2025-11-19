@@ -4,7 +4,7 @@ const multer = require('multer');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const path = require('path');
-const fs = require('fs');
+const fs = require('fs'); // Required for file system operations
 
 const User = require('./models/User');
 const Blog = require('./models/Blog');
@@ -15,8 +15,15 @@ const PORT = process.env.PORT || 3000;
 // Configuration
 const MONGO_BASE = process.env.MONGO_BASE || 'mongodb://localhost:27017/';
 const DB_NAME = process.env.DB_NAME || 'salt-and-pepper-blog';
-const MONGO_URI = `${MONGO_BASE}${DB_NAME}`; // uses provided base and appends DB name
+const MONGO_URI = `${MONGO_BASE}${DB_NAME}`;
 const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_change_me';
+
+// --- FIX 1: Ensure 'uploads' directory exists on startup ---
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir);
+    console.log('Created "uploads" directory successfully.');
+}
 
 // Connect to MongoDB
 mongoose.connect(MONGO_URI, {
@@ -31,18 +38,24 @@ mongoose.connect(MONGO_URI, {
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('.'));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use(express.static('.')); // Serves your HTML files from root
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serves images
 
-// Multer setup for file uploads
+// --- FIX 2: Multer Setup with Limits ---
 const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, 'uploads/'),
     filename: (req, file, cb) => {
+        // Creates a unique filename: timestamp-randomnumber.extension
         const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
         cb(null, unique + path.extname(file.originalname));
     }
 });
-const upload = multer({ storage });
+
+// Define upload instance with 5MB limit
+const upload = multer({ 
+    storage,
+    limits: { fileSize: 1024 * 1024 * 5 } // 5MB Limit
+});
 
 // Helpers
 function generateToken(user) {
@@ -106,10 +119,30 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-// Create a blog (with optional image). Protected route.
-app.post('/api/blogs', authMiddleware, upload.single('image'), async (req, res) => {
+// --- FIX 3: Robust Blog Creation Route ---
+// We wrap the upload logic to catch "File too large" errors explicitly
+app.post('/api/blogs', authMiddleware, (req, res, next) => {
+    const uploadSingle = upload.single('image');
+
+    uploadSingle(req, res, function (err) {
+        if (err instanceof multer.MulterError) {
+            // A Multer error occurred when uploading (e.g. file too large)
+            console.error('Multer upload error:', err);
+            return res.status(400).json({ message: `Upload error: ${err.message}` });
+        } else if (err) {
+            // An unknown error occurred when uploading
+            console.error('Unknown upload error:', err);
+            return res.status(500).json({ message: 'An unknown error occurred during file upload.' });
+        }
+        
+        // If no error, proceed to the next middleware (the actual blog saving logic)
+        next();
+    });
+}, async (req, res) => {
     try {
         const { title, body } = req.body;
+        
+        // Note: req.body is only populated AFTER the upload middleware runs successfully
         if (!title || !body) return res.status(400).json({ message: 'title and body required' });
 
         const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
@@ -135,25 +168,27 @@ app.get('/api/blogs', async (req, res) => {
     }
 });
 
-// Start the server
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
-
 // Delete a blog (protected) - only author can delete
 app.delete('/api/blogs/:id', authMiddleware, async (req, res) => {
     try {
         const id = req.params.id;
         const blog = await Blog.findById(id);
         if (!blog) return res.status(404).json({ message: 'Blog not found' });
+        
         // Check author
         if (String(blog.author) !== String(req.user.id)) return res.status(403).json({ message: 'Not authorized' });
 
         // Remove image file if exists
         if (blog.imageUrl) {
             try {
-                const filePath = path.join(__dirname, blog.imageUrl.replace(/^\//, ''));
-                if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+                // Fix: robust path joining
+                const relativePath = blog.imageUrl.startsWith('/') ? blog.imageUrl.slice(1) : blog.imageUrl;
+                const filePath = path.join(__dirname, relativePath);
+                
+                if (fs.existsSync(filePath)) {
+                    fs.unlinkSync(filePath);
+                    console.log('Deleted image file:', filePath);
+                }
             } catch (err) {
                 console.warn('Failed to remove image file', err);
             }
@@ -165,4 +200,9 @@ app.delete('/api/blogs/:id', authMiddleware, async (req, res) => {
         console.error(err);
         res.status(500).json({ message: 'Server error' });
     }
+});
+
+// Start the server
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
 });
