@@ -4,7 +4,7 @@ const multer = require('multer');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const path = require('path');
-const fs = require('fs'); // Required for file system operations
+const fs = require('fs'); // Required for file system operation
 
 const User = require('./models/User');
 const Blog = require('./models/Blog');
